@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CV Usman Shiddiq dengan tampilan halaman asli dan efek membalik kertas 3D.">
+  <title>CV — Usman Shiddiq</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <input type="checkbox" id="flip" class="flip-toggle" aria-label="Balik halaman CV">
+
+  <main class="viewer">
+
+    <section class="book-scene" aria-label="CV dua halaman">
+      <div class="paper-stack">
+        <!-- Halaman kedua adalah lembar tersendiri yang berada di bawah halaman pertama. -->
+        <article class="paper paper-two" aria-label="Halaman 2 CV">
+          <img src="pages/halaman-2.png" alt="Halaman kedua CV asli Usman Shiddiq">
+        </article>
+
+        <!-- Lembar halaman pertama berputar sendiri; tidak ada panel lebar yang menyatukan dua halaman. -->
+        <div class="turning-sheet">
+          <article class="paper paper-one" aria-label="Halaman 1 CV">
+            <img src="pages/halaman-1.png" alt="Halaman pertama CV asli Usman Shiddiq">
+
+            <!-- Area klik email -->
+            <a class="contact-link email-link"
+               href="https://mail.google.com/mail/?view=cm&fs=1&to=usmanshiddiq5480@gmail.com"
+               target="_blank"
+               rel="noopener noreferrer"
+                aria-label="Kirim email melalui Gmail"></a>
+
+            <!-- Area klik nomor HP -->
+            <a class="contact-link phone-link"
+               href="https://wa.me/62895326714446"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="Chat melalui WhatsApp"></a>
+
+            <!-- Area klik LinkedIn -->
+            <a class="contact-link linkedin-link"
+               href="https://www.linkedin.com/in/usmnshddq/"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="Buka profil LinkedIn"></a>
+          </article>
+
+          <div class="paper reverse-side" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="controls" aria-label="Navigasi halaman">
+      <label for="flip" class="arrow arrow-back" title="Kembali ke halaman 1" aria-label="Kembali ke halaman 1">
+        <span class="arrow-icon">←</span>
+      </label>
+      <div class="page-count"><span class="count-one">01</span><span class="count-two">02</span><span class="slash"> / 02</span></div>
+      <label for="flip" class="arrow arrow-forward" title="Buka halaman 2" aria-label="Buka halaman 2">
+        <span class="arrow-icon">→</span>
+      </label>
+    </nav>
+
+    <footer>
+      © <span></span> 2026 USMAN SHIDDIQ
+      <span class="footer-dot">•</span>
+      MADE WITH LOVE
+    </footer>
+  </main>
+</body>
+</html>

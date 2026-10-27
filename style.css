@@ -1,0 +1,504 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+  --paper-width: min(780px, 88vw);
+  --paper-height: calc(var(--paper-width) * 1.4142);
+  --turn-time: 1.25s;
+
+  /* Warna panah dan lingkaran */
+  --arrow-color: #000000;
+  --arrow-hover-color: #000000;
+  --arrow-circle-color: #f9f9f997;
+  --arrow-circle-hover: #ffffff2b;
+
+  /* Shadow tombol panah */
+  --arrow-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+  --arrow-hover-shadow: 0 7px 18px rgba(0, 0, 0, 0.30);
+
+  /* Shadow kertas */
+  --paper-shadow: 0 22px 30px rgba(0, 0, 0, 0.25);
+}
+
+html {
+  min-height: 100%;
+  max-width: 100%;
+  background: #e9edf2;
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #17212b;
+  font-family: Arial, Helvetica, sans-serif;
+
+  background-image:
+    linear-gradient(
+      rgba(249, 249, 249, 0),
+      rgba(233, 237, 242, 0)
+    ),
+    url("wood\ white.jpg");
+
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
+/* INPUT UNTUK MEMBALIK HALAMAN */
+.flip-toggle {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* AREA UTAMA */
+.viewer {
+  position: relative;
+  min-height: 100vh;
+  padding: 28px 18px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* JUDUL - JIKA DIGUNAKAN */
+.heading {
+  text-align: center;
+  margin: 0 0 22px;
+}
+
+.eyebrow {
+  margin: 0 0 5px;
+  color: #2575a8;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .22em;
+}
+
+.heading h1 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -.035em;
+}
+
+.instruction {
+  margin: 8px 0 0;
+  color: #637181;
+  font-size: 14px;
+}
+
+/* AREA KERTAS */
+.book-scene {
+  position: relative;
+  width: var(--paper-width);
+  height: var(--paper-height);
+  perspective: 2300px;
+  perspective-origin: 50% 50%;
+  isolation: isolate;
+  flex-shrink: 0;
+}
+
+.paper-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  filter: drop-shadow(var(--paper-shadow));
+}
+
+.paper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  overflow: hidden;
+  border: 1px solid rgba(32, 42, 54, .12);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.paper img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.paper-two {
+  z-index: 1;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .7);
+}
+
+/* ANIMASI MEMBALIK KERTAS */
+.turning-sheet {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition:
+    transform var(--turn-time) cubic-bezier(.65, 0, .25, 1);
+  will-change: transform;
+}
+
+.paper-one {
+  z-index: 2;
+  box-shadow:
+    inset -3px 0 5px rgba(35, 45, 55, .09),
+    2px 0 2px rgba(25, 35, 45, .12);
+}
+
+.reverse-side {
+  z-index: 1;
+  transform: rotateY(180deg);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, .12),
+      transparent 8%,
+      #fff 22%,
+      #fdfdfd 100%
+    );
+  box-shadow: inset 3px 0 8px rgba(30, 40, 50, .09);
+}
+
+#flip:checked ~ .viewer .turning-sheet {
+  transform: rotateY(-180deg);
+}
+
+/* NAVIGASI PANAH */
+.controls {
+  position: absolute;
+
+  /* Posisi di tengah vertikal kertas */
+  top: calc(
+    28px +
+    (var(--paper-height) / 2)
+  );
+
+  /*
+    Lebar area navigasi mengikuti kertas
+    dan memberi ruang untuk panah di luar kertas.
+  */
+  left: 50%;
+  width: calc(var(--paper-width) + 324px);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 0;
+  padding: 0;
+
+  transform: translate(-50%, -50%);
+  z-index: 20;
+
+  /*
+    Area navigasi tidak menghalangi halaman.
+    Hanya tombol panah yang dapat diklik.
+  */
+  pointer-events: none;
+}
+
+/* IKON PANAH DENGAN BACKGROUND LINGKARAN */
+
+/* TOMBOL PANAH — LINGKARAN SEMPURNA */
+.arrow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 46px;
+  width: 46px;
+  min-width: 46px;
+  height: 46px;
+  min-height: 46px;
+  aspect-ratio: 1 / 1;
+
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+
+  color: var(--arrow-color);
+  background: var(--arrow-circle-color);
+  box-shadow: var(--arrow-shadow);
+
+  cursor: pointer;
+  pointer-events: auto;
+  text-decoration: none;
+  text-align: center;
+  line-height: 1;
+
+  transition:
+    color .2s ease,
+    background-color .2s ease,
+    box-shadow .2s ease;
+}
+
+/* POSISI SIMBOL PANAH */
+.arrow .arrow-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  margin: 0;
+  padding: 0;
+  position: static;
+  transform: none;
+}
+
+/* HOVER — BENTUK TETAP BULAT */
+.arrow-back:hover,
+.arrow-forward:hover {
+  color: var(--arrow-hover-color);
+  background: var(--arrow-circle-hover);
+  box-shadow: var(--arrow-hover-shadow);
+  transform: none;
+}
+
+/* KLIK — BENTUK TETAP BULAT */
+.arrow-back:active,
+.arrow-forward:active {
+  transform: none;
+}
+
+
+/* Memusatkan simbol panah di dalam lingkaran */
+.arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* EFEK HOVER */
+.arrow-back:hover,
+.arrow-forward:hover {
+  color: var(--arrow-hover-color);
+  background: var(--arrow-circle-hover);
+  box-shadow: var(--arrow-hover-shadow);
+  transform: scale(1.08);
+}
+
+/* EFEK KLIK */
+.arrow-back:active,
+.arrow-forward:active {
+  transform: scale(.94);
+}
+
+/* NOMOR HALAMAN */
+.page-count {
+  position: absolute;
+  top: calc(var(--paper-height) / 2 + 45px);
+  left: 50%;
+  min-width: 74px;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  color: #000000;
+  pointer-events: none;
+}
+
+.count-two {
+  display: none;
+}
+
+.slash {
+  color: #000000;
+  font-weight: 500;
+}
+
+#flip:checked ~ .viewer .count-one {
+  display: none;
+}
+
+#flip:checked ~ .viewer .count-two {
+  display: inline;
+}
+
+/* CATATAN TAMBAHAN */
+.note {
+  margin: 16px 0 0;
+  color: #7b8793;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* FOOTER */
+footer {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: 42px;
+  padding-top: 20px;
+
+  color: #000000c1;
+  text-align: center;
+  font-size: .62rem;
+  letter-spacing: 1px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+footer::before {
+  content: "";
+  display: block;
+  position: center;
+  left: calc(50% - 50vw);
+
+  width: 100vw;
+  max-width: 100%;
+  height: .5px;
+
+  background: #000000c1;
+  margin-bottom: 20px;
+}
+
+.footer-dot {
+  padding: 0 7px;
+  color: #000000c1;
+}
+
+/* TAMPILAN TABLET DAN HP */
+@media (max-width: 600px) {
+  :root {
+    --paper-width: 92vw;
+  }
+
+  .viewer {
+    padding: 22px 10px 24px;
+  }
+
+  .heading {
+    margin-bottom: 17px;
+  }
+
+  .instruction {
+    font-size: 12px;
+  }
+
+  .controls {
+    top: calc(
+      22px +
+      (var(--paper-height) / 2)
+    );
+
+    width: calc(var(--paper-width) + 52px);
+  }
+
+  .arrow {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+    font-size: 23px;
+  }
+
+  .page-count {
+    top: calc(var(--paper-height) / 2 + 36px);
+    font-size: 13px;
+  }
+
+  footer {
+    margin-top: 36px;
+    font-size: .58rem;
+  }
+}
+
+/* HP DENGAN LAYAR SANGAT KECIL */
+@media (max-width: 360px) {
+  .controls {
+    width: calc(var(--paper-width) + 38px);
+  }
+
+  .arrow {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+    font-size: 21px;
+  }
+}
+
+/* AKSESIBILITAS */
+.arrow:focus-visible {
+  outline: 2px solid var(--arrow-color);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .turning-sheet {
+    transition-duration: .01ms;
+  }
+
+  .arrow {
+    transition: none;
+  }
+}
+
+/* AREA KLIK INFORMASI KONTAK */
+.paper-one {
+  position: relative;
+}
+
+.contact-link {
+  position: fixed;
+  display: block;
+  z-index: 5;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Nomor HP: 0895-3267-14446 */
+.phone-link {
+  top: 4.25%;
+  left: 20%;
+  width: 14.2%;
+  height: 1.8%;
+}
+
+/* Email: usmanshiddiq5480@gmail.com */
+.email-link {
+  top: 4.25%;
+  left: 35.8%;
+  width: 25.7%;
+  height: 1.8%;
+}
+
+/* Profil LinkedIn */
+.linkedin-link {
+  top: 4.25%;
+  left: 63.5%;
+  width: 23.5%;
+  height: 1.8%;
+}
+
+/* Koreksi posisi simbol panah di dalam lingkaran */
+.arrow .arrow-icon {
+  position: relative;
+  top: 3px;
+  left: 0;
+  margin: 0;
+  transform: none;
+}
